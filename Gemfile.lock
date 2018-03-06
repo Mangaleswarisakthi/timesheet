@@ -129,6 +129,8 @@ GEM
     omniauth (1.8.1)
       hashie (>= 3.4.6, < 3.6.0)
       rack (>= 1.6.2, < 3)
+    omniauth-facebook (4.0.0)
+      omniauth-oauth2 (~> 1.2)
     omniauth-google-oauth2 (0.5.3)
       jwt (>= 1.5)
       omniauth (>= 1.1.1)
@@ -239,6 +241,7 @@ DEPENDENCIES
   mysql2 (>= 0.3.18, < 0.5)
   nested_form
   omniauth
+  omniauth-facebook
   omniauth-google-oauth2
   omniauth-oauth2
   puma (~> 3.7)

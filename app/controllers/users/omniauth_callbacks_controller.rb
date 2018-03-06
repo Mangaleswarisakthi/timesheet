@@ -13,7 +13,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   # GET|POST /resource/auth/twitter
    def passthru
-     super
+	super
    end
 
   # GET|POST /users/auth/twitter/callback
@@ -27,6 +27,17 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
    def after_omniauth_failure_path_for(scope)
      super(scope)
    end
+
+   def facebook
+
+   @user = User.from_omniauth(request.env["omniauth.auth"])
+    if @user
+      sign_in @user
+      redirect_to root_path
+    else
+      redirect_to new_user_session_path, notice: 'Access Denied.'
+    end
+end
  def google_oauth2
     @user = User.from_omniauth(request.env["omniauth.auth"])
     if @user

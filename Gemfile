@@ -36,6 +36,7 @@ gem 'devise'
 gem 'omniauth'
 gem 'omniauth-oauth2'
 gem 'omniauth-google-oauth2'
+gem 'omniauth-facebook'
 
 
 # Use Capistrano for deployment
