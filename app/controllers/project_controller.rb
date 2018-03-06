@@ -60,6 +60,7 @@ end
   end
 
 def uptasks
+@projects=Proj.order(:title).page(params[:page]).per(5)
 	@taskdate=params[:obj][:taskdate]
 	@tasks=params[:proj][:tasks_attributes]
 	sum=0
@@ -80,7 +81,7 @@ t=8-Task.where(:taskdate => @taskdate).sum(:duration)
 				flash[:notice] ="Sry No Remaining Hours for You #{@taskdate}"
 			end
 		end
-	@projects=Proj.all
+
 	@project=Proj.new()
 	count.times {@project.tasks.build}
 	count=0
