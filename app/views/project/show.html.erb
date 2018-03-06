@@ -1,0 +1,39 @@
+
+
+<center><h1><font face="Arial" color="blue" size="6">
+<b>Task Details</b></font></h1>	
+<hr size="4" color="green">
+
+<table cellpadding="6" cellspacing="6">
+<tr><td><font face='Arial' color='red' size='3'><b>Title</b></font></td>
+<td><font face='Arial' color='red' size='3'><b>Description</b></font></td></tr>
+
+<tr><td><%= @project.title %></td><td><%= @project.desc %></td></tr>
+</table></center>
+
+
+
+<%= nested_form_for @project, :url => "/project/#{@project.id}", method: "PUT" do |f| %>
+	   &nbsp;&nbsp;&nbsp;<font face="Arial" color="red"><%= "<div>#{@project.errors.full_messages.first}</div>".html_safe if @project.errors.any? %>   </font>
+	
+<table id="tasks"><tr><td><font face='Arial' color='blue' size='3'>Date</font></td><td><font face='Arial' color='blue' size='3'>Title</font></td><td><font face='Arial' color='blue' size='3'>Description</font></td><td><font face='Arial' color='blue' size='3'>Duration</font></td></tr>
+<%= f.fields_for :tasks, :wrapper => false do |task| %>
+	 <tr class="fields"><td><%= task.date_field :taskdate %></td><td>
+		<%= task.text_field :title %></td>
+
+	<td>
+		<%= task.text_field :desc %></td>
+	<td>
+		<%= task.text_field :duration %></td><td><%= task.link_to_remove "Remove" %></td>
+
+</tr>
+
+<% end %>
+</table>
+ 	<%= f.link_to_add "add", :tasks,  "data-target" => "#tasks"%>	
+	
+	<%= f.submit "save" %> 
+
+<% end %>
+ <%= link_to 'Back', {:controller => 'project', :action => 'index'} %>
+

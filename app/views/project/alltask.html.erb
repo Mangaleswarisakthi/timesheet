@@ -1,0 +1,82 @@
+<script>
+
+$(document).ready(function(){
+
+  $("#ser").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#sdetail tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+	$("#total").on("click",function(event){
+		var v=0.0;
+		$(".sum").each(function(){
+			v += parseFloat(this.value);
+		});
+		if(v > 8)
+		{
+			$("#result").text("Only 8 Hours Work will be Updated").css("color","red");
+			event.preventDefault()
+		}
+		
+	});
+});
+
+</script>
+<style> 
+#tab, #flip {
+    padding: 5px;
+    text-align: center;
+    background-color: #ffb6c1;
+    border: solid 1px  #ff0000;
+}
+
+#tab {
+    padding: 50px;
+   
+}
+</style>
+<center><font face="ArialT" color="Red" size="4"><b>Time Sheet</b></font>
+<hr width="120" color="green" size="4"><br><b>
+<div id="result" color="red"></div></b><br><br>
+<%= nested_form_for @project, :url => {:action => "uptasks"} do |f| %>
+<% if @taskdate %>
+	<%= date_field(:obj, :taskdate, :value => @taskdate) %>
+<% else %>
+	<%= date_field(:obj, :taskdate) %>
+<% end %><br><br>
+<table id="tasks"><tr><td><font face='Arial' color='blue' size='3'>ProjectTitle</font></td><td><font face='Arial' color='blue' size='3'>Title</font></td><td><font face='Arial' color='blue' size='3'>Description</font></td><td><font face='Arial' color='blue' size='3'>Duration</font></td></tr>
+<%= f.fields_for :tasks, :wrapper => false do |task| %>
+
+	 <tr class="fields"><td> 
+<%= task.select :proj_id, options_for_select(Proj.all.map{|c| [c.title, c.id]}, task.object.proj_id), {}, {class: "form-control selectpicker", data: "live-search"} %></td><td>
+		<%= task.text_field :title %></td>
+
+	<td>
+		<%= task.text_field :desc %></td><td>	
+		<%= task.text_field :duration, :class => "sum" %></td><td><%= task.link_to_remove "Remove" %></td>
+
+</tr>
+
+<% end %>
+
+</table><br>
+ 	<%= f.link_to_add "add", :tasks,  "data-target" => "#tasks"%>	
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<%= f.submit "save", :id => "total" %><br>
+	<br><%= link_to 'Back', {:controller => 'project', :action => 'index'} %>
+<% end %><br><br>
+<hr size="5" color="green"><br><br>
+<input id="ser" type="text" placeholder="YYYY-MM-DD..">
+<br><br>
+<center>  <font face="ArialT" color="Red" size="4" ><b> <div id="flip">All Tasks</div> </b></font></center>
+<div id="tab"><center>
+<table border="2" cellspacing="5" cellpadding="5" bordercolor="red">
+<tr><td><font face="ArialT" color="blue" size="4">Project Title</font></td><td><font face="ArialT" color="blue" size="4">Description</font></td><td><center><font face="ArialT" color="blue" size="4">Task</font></center></td></tr></font>
+<%= paginate @projects %>
+
+<% @projects.each do |p| %><tbody id="sdetail">
+<tr><td><%= p.title %><td><%= p.desc %></td><td><table cellspacing="6" cellpadding="6"><tr><td><font face="ArialT" color="blue" size="4">Date</font></td><td><font face="ArialT" color="blue" size="4">Title</font></td><td><font face="ArialT" color="blue" size="4">Description</font></td><td><font face="ArialT" color="blue" size="4">Duration</font></td></tr><% p.tasks.each do |t| %><tr></td><td><%= t.taskdate %></td><td><%= t.title %></td><td><%= t.desc %></td><td><%= t.duration %></td></tr><% end %></table></td></tr></tbody><% end %></table></center>
+</div>
+
+

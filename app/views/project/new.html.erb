@@ -1,0 +1,29 @@
+<head>
+</head>
+<body >
+<center>
+<h1>Project Details</h1>
+<hr size="4" color="green">
+<%= form_for @project, url: {action: :create} do |form| %>
+	   &nbsp;&nbsp;&nbsp;<font face="Arial" color="red"><%= "<div>#{@project.errors.full_messages.first}</div>".html_safe if @project.errors.any? %>   </font>
+	
+	<div class="p">
+	<table style=" color="gray"><tr><td>
+		<%=form.label :Title %>&nbsp;&nbsp;</td><td>
+		<%=form.text_field :title %></td></tr>
+	<tr><td>
+		<%= form.label :Description %>&nbsp;&nbsp;</td><td>
+		<%= form.text_area :desc %></td></tr>
+	<tr><td>
+
+	</table>
+	
+	<p>	
+		<%= form.submit :Submit %>
+	</p>
+</div>
+<% end %>
+</center>
+</body>
+
+ 
