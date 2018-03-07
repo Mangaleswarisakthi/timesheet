@@ -280,4 +280,6 @@ Devise.setup do |config|
   config.omniauth :google_oauth2, '925323046579-e5he1gj1mf56vkd1n6mlmk9oq39o7mgd.apps.googleusercontent.com', 'C-pDG2k3pGW6vcNgtejdt3fP', {
    scope: "email"}
 config.omniauth :facebook, "2032657770338258", "552873778b0adea5766a1b027abb57b2", { scope: "email"}
+config.omniauth :github, "e64c0709996cb8319715", "95ce94beb838a47fb1d1ae1ec705d478562159e6", { scope: "email"}
+
 end

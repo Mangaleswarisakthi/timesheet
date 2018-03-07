@@ -1,31 +1,37 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
- #has_many :identities
+ has_many :identity
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:facebook, :google_oauth2]
-
- # def self.create_with_omniauth(info)
-  #  create(name: info['name'])
-  #end
- def self.from_omniauth(auth)
-   if self.where(email: auth.info.email).exists?
-	  return_user = self.where(email: auth.info.email).first
-    return_user.provider = auth.provider
-    return_user.uid = auth.uid
-	else
-	return_user = self.create do |user|
-      user.provider = auth.provider
-      user.uid = auth.uid
-      user.name = auth.info.name
-      user.oauth_token = auth.credentials.token
-      user.oauth_expires_at = Time.at(auth.credentials.expires_at)
-user.email = auth.info.email
-user.password = "chithra"
-      user.save!
-    end
+         :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:facebook, :google_oauth2, :github]
+def self.from_omniauth(auth)
+    user = Identity.where(:provider => auth.provider, :uid => auth.uid).first
+        unless user.nil?
+            user.user
+        else
+		
+            registered_user = User.where(:email => auth.info.email).first
+            unless registered_user.nil?
+                        Identity.create!(
+                              provider: auth.provider,
+                              uid: auth.uid,
+                              user_id: registered_user.id
+                              )
+                registered_user
+            else
+		puts auth.info
+                user = User.create!(
+                    name: auth.info.name,
+                            email: auth.info.email,
+                            password: Devise.friendly_token[0,20],
+                            )
+                user_provider = Identity.create!(
+                    provider:auth.provider,
+                            uid:auth.uid,
+                              user_id: user.id
+                    )
+                user
+            end
+        end
 end
-return_user
-  end
-
 end
