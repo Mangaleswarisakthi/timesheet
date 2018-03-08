@@ -1,5 +1,4 @@
 class Proj < ApplicationRecord
-
 	has_many :tasks, dependent: :destroy
 #attr_accessor :duration, :tasks_attributes
 
@@ -7,6 +6,7 @@ accepts_nested_attributes_for :tasks, allow_destroy: true, reject_if: proc { |at
 
 validates :title, presence: true 
 	validates :desc, presence: true 
+validates_associated :tasks	
 
 
 'validate :total, on: :create

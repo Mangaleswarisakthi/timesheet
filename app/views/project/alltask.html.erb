@@ -39,7 +39,9 @@ $(document).ready(function(){
 <center><font face="ArialT" color="Red" size="4"><b>Time Sheet</b></font>
 <hr width="120" color="green" size="4"><br><b>
 <div id="result" color="red"></div></b><br><br>
-<%= nested_form_for @project, :url => {:action => "uptasks"} do |f| %>
+<%= nested_form_for @project, :url => {:action => "uptasks"}, :validate => true do |f| %>
+ &nbsp;&nbsp;&nbsp;<font face="Arial" color="red"><%= "<div>#{@project.errors.full_messages.first}</div>".html_safe if @project.errors.any? %>   </font>
+	<div class="p">
 <% if @taskdate %>
 	<%= date_field(:obj, :taskdate, :value => @taskdate) %>
 <% else %>
@@ -47,8 +49,9 @@ $(document).ready(function(){
 <% end %><br><br>
 <table id="tasks"><tr><td><font face='Arial' color='blue' size='3'>ProjectTitle</font></td><td><font face='Arial' color='blue' size='3'>Title</font></td><td><font face='Arial' color='blue' size='3'>Description</font></td><td><font face='Arial' color='blue' size='3'>Duration</font></td></tr>
 <%= f.fields_for :tasks, :wrapper => false do |task| %>
-
-	 <tr class="fields"><td> 
+ 
+	
+<tr class="fields"><td> 
 <%= task.select :proj_id, options_for_select(Proj.all.map{|c| [c.title, c.id]}, task.object.proj_id), {}, {class: "form-control selectpicker", data: "live-search"} %></td><td>
 		<%= task.text_field :title %></td>
 
@@ -58,6 +61,7 @@ $(document).ready(function(){
 
 </tr>
 
+
 <% end %>
 
 </table><br>
@@ -65,6 +69,7 @@ $(document).ready(function(){
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	<%= f.submit "save", :id => "total" %><br>
 	<br><%= link_to 'Back', {:controller => 'project', :action => 'index'} %>
+</div>
 <% end %><br><br>
 <hr size="5" color="green"><br><br>
 <input id="ser" type="text" placeholder="YYYY-MM-DD..">

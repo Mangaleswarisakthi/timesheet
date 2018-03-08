@@ -1,6 +1,5 @@
 class Task < ApplicationRecord
  	 belongs_to :proj, required: false, optional: true
- 
 	validates :taskdate, presence: true
 	validates :title, presence: true 
 	validates :desc, presence: false

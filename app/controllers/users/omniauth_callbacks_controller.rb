@@ -28,31 +28,42 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
      super(scope)
    end
 def github
-   @user = User.from_omniauth(request.env["omniauth.auth"])
-    if @user
+	c=$sign
+   @user = User.from_omniauth(request.env["omniauth.auth"],c)
+    if @user && c==2
       sign_in @user
       redirect_to root_path
+elsif c==1
+	  redirect_to new_user_session_path, notice: 'Sign up Successfully.'
     else
-      redirect_to new_user_session_path, notice: 'Access Denied.'
-    end
+      redirect_to new_user_session_path, notice: 'Please Signup First.'
+    end	
   end
    def facebook
-
-   @user = User.from_omniauth(request.env["omniauth.auth"])
-    if @user
+puts "request= #{request.url}"
+c=$sign
+   @user = User.from_omniauth(request.env["omniauth.auth"],c)
+    if @user && c==2
       sign_in @user
+
       redirect_to root_path
+elsif c==1
+
+	  redirect_to new_user_session_path, notice: 'Sign up Successfully.'
     else
-      redirect_to new_user_session_path, notice: 'Access Denied.'
+      redirect_to new_user_session_path, notice: 'Please Signup First.'
     end
 end
  def google_oauth2
-    @user = User.from_omniauth(request.env["omniauth.auth"])
-    if @user
+c=$sign
+    @user = User.from_omniauth(request.env["omniauth.auth"],c)
+    if @user  && c==2
       sign_in @user
       redirect_to root_path
+elsif c==1
+	  redirect_to new_user_session_path, notice: 'Sign up Successfully.'
     else
-      redirect_to new_user_session_path, notice: 'Access Denied.'
+      redirect_to new_user_session_path, notice: 'Please Signup First.'
     end
 end
 end
