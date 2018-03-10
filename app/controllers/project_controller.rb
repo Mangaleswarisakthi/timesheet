@@ -60,7 +60,7 @@ end
   end
 
 def uptasks
-@projects=Proj.order(:title).page(params[:page]).per(5)
+	@projects=Proj.order(:title).page(params[:page]).per(5)
 	@taskdate=params[:obj][:taskdate]
 	@tasks=params[:proj][:tasks_attributes]
 	sum=0
@@ -68,17 +68,17 @@ def uptasks
 	valid=0
 	valid1=0
 	@tasks.each do |i|
-	j=@tasks[i]
-	sum += j["duration"].to_i
-	if j["title"].blank? 
-		valid+=1
+		j=@tasks[i]
+		sum += j["duration"].to_i
+		if j["title"].blank? 
+			valid+=1
+		end
+		if j["duration"].blank?
+			valid1+=1
+		end 
+		count+=1
 	end
-	if j["duration"].blank?
-		valid1+=1
-	end
-	count+=1
-	end
-t=8-Task.where(:taskdate => @taskdate).sum(:duration)	
+	t=8-Task.where(:taskdate => @taskdate).sum(:duration)	
 	if sum > 8 || sum > t || @taskdate.blank? || valid>0 || valid1>0
 		if sum > 8 
 			flash[:notice] = 'Sry Only 8 hours should be Updated'
@@ -88,55 +88,33 @@ t=8-Task.where(:taskdate => @taskdate).sum(:duration)
 			else 
 				flash[:notice] ="Sry No Remaining Hours for You #{@taskdate}"
 			end
+		
+
 		elsif @taskdate.blank?
-			flash[:notice] ="Please Select Date"
+			flash[:notice] = "pls enter the task date"
 		elsif valid>0
 			flash[:notice] ="Pls Enter the  Title Field"
 		else
 			flash[:notice] ="Pls Enter the  Duration Field"
 		end
-
-	@project=Proj.new()
-	count.times {@project.tasks.build}
-	count=0
-	@tasks.each do |i|
-		j=@tasks[i]
-		@project.tasks[count].proj_id = j["proj_id"]
-		@project.tasks[count].title = j["title"]
-		@project.tasks[count].desc = j["desc"]
-		@project.tasks[count].duration=j["duration"]
-		count+=1
-	end
-		count = 0
-		render 'alltask'		
+		render :json => {error: flash[:notice]}
 	else
-	@tasks.each do |i|	
-	j=@tasks[i]
-	@task=Task.create(
-		:proj_id => j["proj_id"],
-		:taskdate => @taskdate,
-		:title => j["title"],
-		:desc => j["desc"],
-		:duration => j["duration"]
-		)
-	if @task.save
+		if Proj.update(task_params)
 
-		flash[:notice] = 'Your Details Successfully Updated!'
-	else
-		flash[:error] = 'Sorry Updation is Failed!'
+			render :json => {success: "Project Successfully Added"}
+		else
+			render :json => {error: "Not success"}
+		end
+
 	end
 
-		
-end
 
-
-redirect_to '/project/alltask'
+#redirect_to '/project/alltask'
 end
-end
-  
 def add_params
 	params.require(:proj).permit(:title, :desc, :id, :tasks_attributes => [:id, :proj_id, :taskdate, :title, :desc, :duration, :_destroy] )
-
 end
-
+def task_params
+	params.require(:proj).permit(tasks_attributes:[:proj_id, :taskdate, :title, :desc, :duration, :_destroy])
+end
 end

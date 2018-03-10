@@ -5,10 +5,12 @@ $(document).ready(function(){
   $("#ser").on("keyup", function() {
     var value = $(this).val().toLowerCase();
     $("#sdetail tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
+	  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+	  });
+	 
   });
 	$("#total").on("click",function(event){
+		$(".date").val($("#obj_taskdate").val())
 		var v=0.0;
 		$(".sum").each(function(){
 			v += parseFloat(this.value);
@@ -18,8 +20,25 @@ $(document).ready(function(){
 			$("#result").text("Only 8 Hours Work will be Updated").css("color","red");
 			event.preventDefault()
 		}
+		$.ajax({
+			type: 'POST',
+			url: "/project",
+			data: $("form").serialize(),
+			success: function(response)
+			 { 
+				 if(response.success)
+					{
+				 $("#result").text(response.success).css("color","green");
+					}
+					if(response.error)
+						{
+							$("#result").text(response.error).css("color","red");
+						}
+			}
 		
+		});
 	});
+	
 });
 
 </script>
@@ -37,6 +56,7 @@ $(document).ready(function(){
 }
 </style>
 <center><font face="ArialT" color="Red" size="4"><b>Time Sheet</b></font>
+
 <hr width="120" color="green" size="4"><br><b>
 <div id="result" color="red"></div></b><br><br>
 <%= nested_form_for @project, :url => {:action => "uptasks"}, :validate => true do |f| %>
@@ -49,7 +69,7 @@ $(document).ready(function(){
 <% end %><br><br>
 <table id="tasks"><tr><td><font face='Arial' color='blue' size='3'>ProjectTitle</font></td><td><font face='Arial' color='blue' size='3'>Title</font></td><td><font face='Arial' color='blue' size='3'>Description</font></td><td><font face='Arial' color='blue' size='3'>Duration</font></td></tr>
 <%= f.fields_for :tasks, :wrapper => false do |task| %>
- 
+ <tr><%= task.hidden_field :taskdate, :class => "date" %></tr>
 	
 <tr class="fields"><td> 
 <%= task.select :proj_id, options_for_select(Proj.all.map{|c| [c.title, c.id]}, task.object.proj_id), {}, {class: "form-control selectpicker", data: "live-search"} %></td><td>
