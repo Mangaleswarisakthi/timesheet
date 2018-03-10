@@ -1,29 +1,44 @@
-<head>
-</head>
-<body >
-<center>
-<h1>Project Details</h1>
+<center><h1>Project Details</h1>
+<b><div id="result"></div></b>
 <hr size="4" color="green">
 <%= form_for @project, url: {action: :create} do |form| %>
 	   &nbsp;&nbsp;&nbsp;<font face="Arial" color="red"><%= "<div>#{@project.errors.full_messages.first}</div>".html_safe if @project.errors.any? %>   </font>
 	
 	<div class="p">
-	<table style=" color="gray"><tr><td>
-		<%=form.label :Title %>&nbsp;&nbsp;</td><td>
-		<%=form.text_field :title %></td></tr>
+	<table><tr><td>
+		<%= form.label :Title %>&nbsp;&nbsp;</td><td>
+		<%= form.text_field :title %></td></tr>
 	<tr><td>
 		<%= form.label :Description %>&nbsp;&nbsp;</td><td>
 		<%= form.text_area :desc %></td></tr>
 	<tr><td>
 
 	</table>
-	
-	<p>	
-		<%= form.submit :Submit %>
-	</p>
+	<button type="button" class="submit-btn"> Create </button>
 </div>
-<% end %>
-</center>
-</body>
+<% end %> <%= link_to 'Back', {:controller => 'project', :action => 'index'} %></center>
 
- 
+<script>
+$(document).ready(function(){
+
+  $(".submit-btn").on("click", function(event) {
+	  $.ajax({
+		type: 'POST',
+		url: "/project",
+		data: $("form").serialize(),
+		success: function(response)
+		 { 
+			 if(response.success)
+				{
+			 $("#result").text(response.success).css("color","green");
+				}
+				if(response.error)
+					{
+						$("#result").text(response.error).css("color","red");
+					}
+		}
+		
+	});
+  });
+	});
+</script>

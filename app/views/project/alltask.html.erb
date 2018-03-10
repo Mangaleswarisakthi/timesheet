@@ -57,7 +57,7 @@ $(document).ready(function(){
 
 	<td>
 		<%= task.text_field :desc %></td><td>	
-		<%= task.text_field :duration, :class => "sum" %></td><td><%= task.link_to_remove "Remove" %></td>
+		<%= task.number_field :duration, :class => "sum", step: :any %></td><td><%= task.link_to_remove "Remove" %></td>
 
 </tr>
 

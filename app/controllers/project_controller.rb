@@ -1,8 +1,9 @@
 class ProjectController < ApplicationController
 before_action :authenticate_user!
   def index
+	@project=Proj.new
 	#@project=Proj.order("title").page params[:page]
-	@project=Proj.order(:title).page(params[:page]).per(5)
+	@projects=Proj.order(:title).page(params[:page]).per(5)
  ' if params[:title]
     @project = Proj.tagged_with(params[:title])
   else
@@ -13,11 +14,9 @@ before_action :authenticate_user!
 def create
 	@project=Proj.new(add_params)
 	if @project.save
-		flash[:notice]='Success'
-		redirect_to root_path
+		render :json => {success: "Project Successfully Added"}
 	else
-		flash[:notice]='Not Success'
-		render :new
+		render :json => {error: @project.errors.full_messages}
 	end
 	
 end
@@ -67,16 +66,20 @@ def uptasks
 	sum=0
 	count=0
 	valid=0
+	valid1=0
 	@tasks.each do |i|
 	j=@tasks[i]
 	sum += j["duration"].to_i
-	if j["title"].blank? || j["duration"].blank?
+	if j["title"].blank? 
 		valid+=1
+	end
+	if j["duration"].blank?
+		valid1+=1
 	end
 	count+=1
 	end
 t=8-Task.where(:taskdate => @taskdate).sum(:duration)	
-	if sum > 8 || sum > t || @taskdate.blank? || valid>0
+	if sum > 8 || sum > t || @taskdate.blank? || valid>0 || valid1>0
 		if sum > 8 
 			flash[:notice] = 'Sry Only 8 hours should be Updated'
 		elsif sum > t
@@ -87,8 +90,10 @@ t=8-Task.where(:taskdate => @taskdate).sum(:duration)
 			end
 		elsif @taskdate.blank?
 			flash[:notice] ="Please Select Date"
+		elsif valid>0
+			flash[:notice] ="Pls Enter the  Title Field"
 		else
-			flash[:notice] ="Pls Enter all Fields"
+			flash[:notice] ="Pls Enter the  Duration Field"
 		end
 
 	@project=Proj.new()

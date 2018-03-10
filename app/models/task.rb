@@ -3,7 +3,7 @@ class Task < ApplicationRecord
 	validates :taskdate, presence: true
 	validates :title, presence: true 
 	validates :desc, presence: false
-	validates :duration, presence: true, :inclusion => { :in =>0.0..8.0 }
+	validates :duration, presence: true, :inclusion => { :in =>1.0..8.0 }, numericality: true
 	#validate :validate_total
 	' def validate_total()
     totals = proj.tasks.sum(:duration)

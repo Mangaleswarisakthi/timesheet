@@ -7,13 +7,14 @@
 <% end %>
 
 <%= link_to "New Project", {:controller => 'project', :action => 'new'} %>&nbsp;&nbsp;&nbsp;<%= link_to "All Tasks", {:controller => 'project', :action => 'alltask'} %></b><br><br>
+
 <table cellpadding="7" cellspacing="7">
 <tr><td><font face="Arial" color="Red" size="3" style="bold"><b>Title</b></font></td><td><font face="Arial" color="Red" size="3"><b>Description</b></font></td></tr>
-<%= paginate @project %>
+<%= paginate @projects %>
 
 
 
-<% @project.each do |f|
+<% @projects.each do |f|
 %>
 <tr><td><%= f.title %></td>
 <td><%= f.desc %></td>

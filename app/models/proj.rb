@@ -4,7 +4,7 @@ class Proj < ApplicationRecord
 
 accepts_nested_attributes_for :tasks, allow_destroy: true, reject_if: proc { |attributes| attributes['title'].blank? }
 
-validates :title, presence: true 
+validates :title, presence: true, :length => {:in => 4..15} 
 	validates :desc, presence: true 
 validates_associated :tasks	
 

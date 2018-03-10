@@ -28,39 +28,36 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
      super(scope)
    end
 def github
-	c=$sign
-   @user = User.from_omniauth(request.env["omniauth.auth"],c)
-    if @user && c==2
+	puts "request= #{request.url}"
+   @user = User.from_omniauth(request.env["omniauth.auth"],cookies[:url])
+    if @user  && cookies[:url]=="http://localhost:3000/users/sign_in"
       sign_in @user
       redirect_to root_path
-elsif c==1
+    elsif cookies[:url]=="http://localhost:3000/users/sign_up"
 	  redirect_to new_user_session_path, notice: 'Sign up Successfully.'
     else
       redirect_to new_user_session_path, notice: 'Please Signup First.'
-    end	
-  end
+    end
+end
    def facebook
 puts "request= #{request.url}"
-c=$sign
-   @user = User.from_omniauth(request.env["omniauth.auth"],c)
-    if @user && c==2
+
+   @user = User.from_omniauth(request.env["omniauth.auth"],cookies[:url])
+    if @user  && cookies[:url]=="http://localhost:3000/users/sign_in"
       sign_in @user
-
       redirect_to root_path
-elsif c==1
-
+    elsif cookies[:url]=="http://localhost:3000/users/sign_up"
 	  redirect_to new_user_session_path, notice: 'Sign up Successfully.'
     else
       redirect_to new_user_session_path, notice: 'Please Signup First.'
     end
 end
  def google_oauth2
-c=$sign
-    @user = User.from_omniauth(request.env["omniauth.auth"],c)
-    if @user  && c==2
+@user = User.from_omniauth(request.env["omniauth.auth"],cookies[:url])
+    if @user  && cookies[:url]=="http://localhost:3000/users/sign_in"
       sign_in @user
       redirect_to root_path
-elsif c==1
+    elsif cookies[:url]=="http://localhost:3000/users/sign_up"
 	  redirect_to new_user_session_path, notice: 'Sign up Successfully.'
     else
       redirect_to new_user_session_path, notice: 'Please Signup First.'
