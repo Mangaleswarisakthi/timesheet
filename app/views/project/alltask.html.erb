@@ -10,7 +10,8 @@ $(document).ready(function(){
 	 
   });
 	$("#total").on("click",function(event){
-		
+		var data=$("#obj_date").val();
+		$(".date").val(data);
 		var v=0.0;
 		$(".sum").each(function(){
 			v += parseFloat(this.value);
@@ -34,6 +35,7 @@ $(document).ready(function(){
 				 if(response.success)
 					{
 				 $("#result").text(response.success).css("color","green");
+				 $("#obj_date")="";
 					}
 					if(response.error)
 						{
@@ -78,8 +80,8 @@ $(document).ready(function(){
 <% end %><br><br>
 <table id="tasks"><tr><td><font face='Arial' color='blue' size='3'>ProjectTitle</font></td><td><font face='Arial' color='blue' size='3'>Title</font></td><td><font face='Arial' color='blue' size='3'>Description</font></td><td><font face='Arial' color='blue' size='3'>Duration</font></td></tr>
 <%= f.fields_for :tasks, :wrapper => false do |task| %>
- 
-	
+<tr>	<%= task.hidden_field :taskdate, class: "date" %></tr>
+
 <tr class="fields"><td> 
 <%= task.select :proj_id, options_for_select(Proj.all.map{|c| [c.title, c.id]}, task.object.proj_id), {}, {class: "form-control selectpicker", data: "live-search"} %></td><td>
 		<%= task.text_field :title %></td>

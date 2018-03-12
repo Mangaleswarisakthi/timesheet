@@ -61,82 +61,140 @@ end
 
 def uptasks
 	@projects=Proj.order(:title).page(params[:page]).per(5)
-	@taskdate=params[:obj][:taskdate]
-	@tasks=params[:proj][:tasks_attributes]
+@taskdate=params[:obj][:taskdate]
+@tasks=params[:proj][:tasks_attributes]
 	sum=0
-	count=0
-	valid=0
-	valid1=0
-	@tasks.each do |i|
-	j=@tasks[i]
-	sum += j["duration"].to_i
-	if j["title"].blank? 
-		valid+=1
-	end
-	if j["duration"].blank?
-		valid1+=1
-	end 
-	count+=1
-	end
-t=8-Task.where(:taskdate => @taskdate).sum(:duration)	
-	if sum > 8 || sum > t || @taskdate.blank? || valid>0 || valid1>0
-		if sum > 8 
-			flash[:notice] = 'Sry Only 8 hours should be Updated'
-		elsif sum > t
-			if t > 0
-				flash[:notice] =" #{@taskdate} have Your Remaining hours #{t}"
-			else 
-				flash[:notice] ="Sry No Remaining Hours for You #{@taskdate}"
-			end
-		elsif @taskdate.blank?
-			flash[:notice] ="Please Select Date"
-		elsif valid>0
-			flash[:notice] ="Pls Enter the  Title Field"
-		else
-			flash[:notice] ="Pls Enter the  Duration Field"
+ 	count=0
+# 	valid=0
+# 	valid1=0
+# 	@tasks.each do |i|
+# 	j=@tasks[i]
+ 	#sum += j["duration"].to_i
+# 	if j["title"].blank? 
+# 		valid+=1
+# 	end
+# 	if j["duration"].blank?
+# 		valid1+=1
+# 	end 
+# 	count+=1
+# 	end
+# t=8-Task.where(:taskdate => @taskdate).sum(:duration)	
+# 	if sum > 8 || sum > t 
+# 		if sum > 8 
+# 			flash[:notice] = 'Sry Only 8 hours should be Updated'
+# 		elsif sum > t
+# 			if t > 0
+# 				flash[:notice] =" #{@taskdate} have Your Remaining hours #{t}"
+# 			else 
+# 				flash[:notice] ="Sry No Remaining Hours for You #{@taskdate}"
+# 			end
+# 		end
+
+# 	@project=Proj.new()
+# 	count.times {@project.tasks.build}
+# 	count=0
+# 	@tasks.each do |i|
+# 		j=@tasks[i]
+# 		@project.tasks[count].proj_id = j["proj_id"]
+# 		@project.tasks[count].title = j["title"]
+# 		@project.tasks[count].desc = j["desc"]
+# 		@project.tasks[count].duration=j["duration"]
+# 		count+=1
+# 	end
+# 		count = 0
+# 		render :json => {error: flash[:notice] }		
+# 	else
+# array={'proj_id' => params[:proj_id], 'taskdate' => params[:taskdate], 'title' => params[:title], 'desc' => params[:desc], 'duration' => params[:duration]}
+# puts "#{@array}"
+# @my_hash = Hash.new {|h,k| params[:proj_id]  = Array.new }
+# puts @my_hash
+	#  array=Hash.new(Array.new)
+	# arr=Array.new
+	# params[:proj][:tasks_attributes].each do |i|
+	# 	arr << i.proj_id
+	# 	arr << 
+	# 	puts i.inspect
+	# end
+#	puts arr.inspect
+	#puts "ok" if hash.fetch('proj_id', nil) == arr.inspect
+	 arr=Array.new
+ @tasks.each do |i|	
+  	j=@tasks[i]
+		arr << {"proj_id" => j[:proj_id], "taskdate" => @taskdate, "title" => j[:title], "desc" => j[:desc], "duration" => j[:duration]}
+		sum += j["duration"].to_i
+		count += 1
+		@task= Task.new(arr.last)
+		unless @task.valid?
+			@flag=0
+			break
 		end
-
-	@project=Proj.new()
-	count.times {@project.tasks.build}
-	count=0
-	@tasks.each do |i|
-		j=@tasks[i]
-		@project.tasks[count].proj_id = j["proj_id"]
-		@project.tasks[count].title = j["title"]
-		@project.tasks[count].desc = j["desc"]
-		@project.tasks[count].duration=j["duration"]
-		count+=1
-	end
-		count = 0
-		render :json => {error: flash[:notice] }		
+	 end
+	 
+	puts arr.inspect
+	 t=8-Task.where(:taskdate => @taskdate).sum(:duration)	
+		if sum > 8 || sum > t || @flag==0
+		if sum > 8 
+			render :json => {error: 'Sry Only 8 hours should be Updated'}
+ 		elsif sum > t
+ 			if t > 0
+				render :json => {error: " #{@taskdate} have Your Remaining hours #{t}"}
+ 			else 
+				render :json => {error: "Sry No Remaining Hours for You #{@taskdate}"}
+ 			end
+		else
+			render :json => {error: @task.errors.full_messages}
+		end
+		 count=0
 	else
-	@tasks.each do |i|	
-	j=@tasks[i]
-	@task=Task.create(
-		:proj_id => j["proj_id"],
-		:taskdate => @taskdate,
-		:title => j["title"],
-		:desc => j["desc"],
-		:duration => j["duration"]
-		)
-	if @task.save
-		@flag=0
+	
+	# 	arr << @taskdate
+	# 	arr << j["title"]
+	# 	arr << j["desc"]
+	# 	arr << j["duration"]
 		
-	else
-		@flag=1
-	end
-end
-if @flag==0
-	render :json => {success: "Project Successfully Added"}
-	else 
-		render :json => {error: @task.errors.full_messages}
-	end
+	# 	@c=array.push(arr)
+	# end
+	# puts "#{@c}"
+	# params[:proj][:tasks_attributes]=@c
+	# puts params[:proj][:tasks_attributes].inspect
+# 	if @task.save
+# 		@flag=0
+		
+# 	else
+# 		@flag=1
+# 	end
+# end
+# if @flag==0
+# 	render :json => {success: "Project Successfully Added"}
+# 	else 
+# 		render :json => {error: @task.errors.full_messages}
+# 	end
 
-end
+# end
 
+#@task= @project.build_task(params[:task_params])
+	#'proj_id' => params[:proj_id], 'taskdate' => params[:taskdate], 'title' => params[:title], 'desc' => params[:desc], 'duration' => params[:duration]
+	
+
+#puts params[:proj][:tasks_attributes].inspect
+Task.transaction do
+		if Task.create(arr)
+			@c=1
+		end
+end
+if @c==1
+render :json => {success: "Success"}
+else
+	render :json => {error: @task.errors.full_messages}
+end
 #redirect_to '/project/alltask'
+end
 end
 def add_params
 	params.require(:proj).permit(:title, :desc, :id, :tasks_attributes => [:id, :proj_id, :taskdate, :title, :desc, :duration, :_destroy] )
+end
+def task_params
+
+	params.require(:tasks_attributes).permit(:proj_id, :taskdate, :title, :desc, :duration, :_destroy)
 end
 end
