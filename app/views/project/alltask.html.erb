@@ -10,22 +10,27 @@ $(document).ready(function(){
 	 
   });
 	$("#total").on("click",function(event){
-		$(".date").val($("#obj_taskdate").val())
+		
 		var v=0.0;
 		$(".sum").each(function(){
 			v += parseFloat(this.value);
 		});
+		if(v==0)
+			{
+				$("#result").text("Pls Add the Fields").css("color","red");
+			}
 		if(v > 8)
 		{
 			$("#result").text("Only 8 Hours Work will be Updated").css("color","red");
-			event.preventDefault()
 		}
 		$.ajax({
+		  
 			type: 'POST',
-			url: "/project",
+			url: "/project/uptasks",
 			data: $("form").serialize(),
 			success: function(response)
 			 { 
+				
 				 if(response.success)
 					{
 				 $("#result").text(response.success).css("color","green");
@@ -35,8 +40,9 @@ $(document).ready(function(){
 							$("#result").text(response.error).css("color","red");
 						}
 			}
-		
+			
 		});
+		event.preventDefault();	
 	});
 	
 });
@@ -58,7 +64,10 @@ $(document).ready(function(){
 <center><font face="ArialT" color="Red" size="4"><b>Time Sheet</b></font>
 
 <hr width="120" color="green" size="4"><br><b>
-<div id="result" color="red"></div></b><br><br>
+<div id="result">
+
+
+</div></b><br><br>
 <%= nested_form_for @project, :url => {:action => "uptasks"}, :validate => true do |f| %>
  &nbsp;&nbsp;&nbsp;<font face="Arial" color="red"><%= "<div>#{@project.errors.full_messages.first}</div>".html_safe if @project.errors.any? %>   </font>
 	<div class="p">
@@ -69,7 +78,7 @@ $(document).ready(function(){
 <% end %><br><br>
 <table id="tasks"><tr><td><font face='Arial' color='blue' size='3'>ProjectTitle</font></td><td><font face='Arial' color='blue' size='3'>Title</font></td><td><font face='Arial' color='blue' size='3'>Description</font></td><td><font face='Arial' color='blue' size='3'>Duration</font></td></tr>
 <%= f.fields_for :tasks, :wrapper => false do |task| %>
- <tr><%= task.hidden_field :taskdate, :class => "date" %></tr>
+ 
 	
 <tr class="fields"><td> 
 <%= task.select :proj_id, options_for_select(Proj.all.map{|c| [c.title, c.id]}, task.object.proj_id), {}, {class: "form-control selectpicker", data: "live-search"} %></td><td>

@@ -23,11 +23,13 @@ $(document).ready(function(){
 
   $(".submit-btn").on("click", function(event) {
 	  $.ajax({
+		  
 		type: 'POST',
 		url: "/project",
 		data: $("form").serialize(),
 		success: function(response)
 		 { 
+			
 			 if(response.success)
 				{
 			 $("#result").text(response.success).css("color","green");
