@@ -63,17 +63,22 @@ def uptasks
 	@projects=Proj.order(:title).page(params[:page]).per(5)
 	@taskdate=params[:obj][:taskdate]
 	has_errors = false
+	rem=Array.new
 	params[:proj][:tasks_attributes].values.each do |tast_attr|
-		@tasks = Task.new(tast_attr.except("_destroy"))
-	unless @tasks.valid?
-		has_errors=true
-		break
+		rem << tast_attr.except("_destroy")
+	@tasks = Task.new(tast_attr.except("_destroy"))
+		unless @tasks.valid?
+			has_errors=true
+			break
+		end
 	end
-end
   sum1=params[:proj][:tasks_attributes].values.map {|hash| hash["duration"].to_i}.sum
+  puts sum1
 	 t=8-Task.where(:taskdate => @taskdate).sum(:duration)	
-	if  sum1 > t || has_errors==true
- 		if sum1 > t
+	if  sum1 > t || sum1>8 || has_errors==true
+		if sum1>8
+			render :json => {error: "Only 8 Hours will be updated" }
+		elsif sum1 > t
  			if t > 0
 				render :json => {error: " #{@taskdate} have Your Remaining hours #{t}"}
  			else 
@@ -82,17 +87,11 @@ end
 		else
 			render :json => {error: @tasks.errors.full_messages}
 		end
-	else
-		params[:proj][:tasks_attributes].values.each do |tast_attr|
-		if Task.create(tast_attr.except("_destroy"))
-			@c=1
-		end
-		end
-		if @c==1
+	else	
+		if Task.create(rem)
 			render :json => {success: "success"}
 		end
 	end
-
 end
 def add_params
 	params.require(:proj).permit(:title, :desc, :id, :tasks_attributes => [:id, :proj_id, :taskdate, :title, :desc, :duration, :_destroy])

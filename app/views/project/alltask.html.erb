@@ -24,7 +24,7 @@ $(document).ready(function(){
 		{
 			$("#result").text("Only 8 Hours Work will be Updated").css("color","red");
 		}
-		event.preventDefault();	
+		
 		$.ajax({
 		  
 			type: 'POST',
@@ -46,7 +46,7 @@ $(document).ready(function(){
 			}
 			
 		});
-		
+		event.preventDefault();	
 	});
 	
 });
