@@ -72,10 +72,8 @@ def uptasks
 end
   sum1=params[:proj][:tasks_attributes].values.map {|hash| hash["duration"].to_i}.sum
 	 t=8-Task.where(:taskdate => @taskdate).sum(:duration)	
-	if sum1 > 8 || sum1 > t || has_errors==true
-		if sum1 > 8 
-			render :json => {error: 'Sry Only 8 hours should be Updated'}
- 		elsif sum1 > t
+	if  sum1 > t || has_errors==true
+ 		if sum1 > t
  			if t > 0
 				render :json => {error: " #{@taskdate} have Your Remaining hours #{t}"}
  			else 
