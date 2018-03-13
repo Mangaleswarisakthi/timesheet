@@ -10,8 +10,8 @@ $(document).ready(function(){
 	 
   });
 	$("#total").on("click",function(event){
-		var data=$("#obj_date").val();
-		$(".date").val(data);
+		var data=$("#obj_taskdate").val();
+		$(".taskdata").val(data);
 		var v=0.0;
 		$(".sum").each(function(){
 			v += parseFloat(this.value);
@@ -24,6 +24,7 @@ $(document).ready(function(){
 		{
 			$("#result").text("Only 8 Hours Work will be Updated").css("color","red");
 		}
+		event.preventDefault();	
 		$.ajax({
 		  
 			type: 'POST',
@@ -35,7 +36,8 @@ $(document).ready(function(){
 				 if(response.success)
 					{
 				 $("#result").text(response.success).css("color","green");
-				 $("#obj_date")="";
+				 
+				 $("form")[0].reset();
 					}
 					if(response.error)
 						{
@@ -44,7 +46,7 @@ $(document).ready(function(){
 			}
 			
 		});
-		event.preventDefault();	
+		
 	});
 	
 });
@@ -80,7 +82,7 @@ $(document).ready(function(){
 <% end %><br><br>
 <table id="tasks"><tr><td><font face='Arial' color='blue' size='3'>ProjectTitle</font></td><td><font face='Arial' color='blue' size='3'>Title</font></td><td><font face='Arial' color='blue' size='3'>Description</font></td><td><font face='Arial' color='blue' size='3'>Duration</font></td></tr>
 <%= f.fields_for :tasks, :wrapper => false do |task| %>
-<tr>	<%= task.hidden_field :taskdate, class: "date" %></tr>
+<tr>	<%= task.hidden_field :taskdate, class: "taskdata" %></tr>
 
 <tr class="fields"><td> 
 <%= task.select :proj_id, options_for_select(Proj.all.map{|c| [c.title, c.id]}, task.object.proj_id), {}, {class: "form-control selectpicker", data: "live-search"} %></td><td>
