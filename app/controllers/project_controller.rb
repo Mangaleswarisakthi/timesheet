@@ -89,7 +89,8 @@ def uptasks
 		end
 	else	
 		if Task.create(rem)
-			render :json => {success: "success"}
+			result=render_to_string(:partial => '/project/view', :locals => {:@projects => @projects})
+			render :json => {success: "success", project: result}
 		end
 	end
 end

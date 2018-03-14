@@ -1,0 +1,8 @@
+<div id="tab"><center>
+<table border="2" cellspacing="5" cellpadding="5" bordercolor="red">
+<tr><td><font face="ArialT" color="blue" size="4">Project Title</font></td><td><font face="ArialT" color="blue" size="4">Description</font></td><td><center><font face="ArialT" color="blue" size="4">Task</font></center></td></tr></font>
+<%= paginate @projects %>
+
+<% @projects.each do |p| %><tbody id="sdetail">
+<tr><td><%= p.title %></td><td><%= p.desc %></td><td><table cellspacing="6" cellpadding="6"><tr><td><font face="ArialT" color="blue" size="4">Date</font></td><td><font face="ArialT" color="blue" size="4">Title</font></td><td><font face="ArialT" color="blue" size="4">Description</font></td><td><font face="ArialT" color="blue" size="4">Duration</font></td></tr><% p.tasks.each do |t| %><tr id="ser"><td><%= t.taskdate %></td><td><%= t.title %></td><td><%= t.desc %></td><td><%= t.duration %></td></tr><% end %></table></td></tr></tbody><% end %></table></center>
+</div>

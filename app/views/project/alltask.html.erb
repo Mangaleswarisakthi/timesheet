@@ -9,6 +9,7 @@ $(document).ready(function(){
 	  });
 	 
   });
+  var i=1;
 	$("#total").on("click",function(event){
 		var data=$("#obj_taskdate").val();
 		$(".taskdata").val(data);
@@ -32,17 +33,21 @@ $(document).ready(function(){
 			data: $("form").serialize(),
 			success: function(response)
 			 { 
-				
 				 if(response.success)
-					{
-				 $("#result").text(response.success).css("color","green");
-				 
-				 $("form")[0].reset();
-					}
-					if(response.error)
-						{
-							$("#result").text(response.error).css("color","red");
-						}
+				{
+					 $("#result").text(response.success).css("color","green");
+					$("form")[0].reset();
+				
+				}
+			    if(response.error)
+				{
+					$("#result").text(response.error).css("color","red");					
+				}
+				if(response.project)
+				{
+					$("#tab").html(response.project);
+				}
+						
 			}
 			
 		});
@@ -103,18 +108,13 @@ $(document).ready(function(){
 	<%= f.submit "save", :id => "total" %><br>
 	<br><%= link_to 'Back', {:controller => 'project', :action => 'index'} %>
 </div>
-<% end %><br><br>
+<% end %>
+<br><br>
 <hr size="5" color="green"><br><br>
 <input id="ser" type="text" placeholder="YYYY-MM-DD..">
 <br><br>
-<center>  <font face="ArialT" color="Red" size="4" ><b> <div id="flip">All Tasks</div> </b></font></center>
-<div id="tab"><center>
-<table border="2" cellspacing="5" cellpadding="5" bordercolor="red">
-<tr><td><font face="ArialT" color="blue" size="4">Project Title</font></td><td><font face="ArialT" color="blue" size="4">Description</font></td><td><center><font face="ArialT" color="blue" size="4">Task</font></center></td></tr></font>
-<%= paginate @projects %>
+<center> <font face="ArialT" color="Red" size="4" ><b> <div id="flip">All Tasks</div> </b></font></center>
+<%= render partial: "view" %>
 
-<% @projects.each do |p| %><tbody id="sdetail">
-<tr><td><%= p.title %><td><%= p.desc %></td><td><table cellspacing="6" cellpadding="6"><tr><td><font face="ArialT" color="blue" size="4">Date</font></td><td><font face="ArialT" color="blue" size="4">Title</font></td><td><font face="ArialT" color="blue" size="4">Description</font></td><td><font face="ArialT" color="blue" size="4">Duration</font></td></tr><% p.tasks.each do |t| %><tr></td><td><%= t.taskdate %></td><td><%= t.title %></td><td><%= t.desc %></td><td><%= t.duration %></td></tr><% end %></table></td></tr></tbody><% end %></table></center>
-</div>
 
 
