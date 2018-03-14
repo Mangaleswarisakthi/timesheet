@@ -5,7 +5,6 @@
 
 <%= form_for @project, url: {action: :create} do |form| %>
 	   &nbsp;&nbsp;&nbsp;<font face="Arial" color="red"><%= "<div>#{@project.errors.full_messages.first}</div>".html_safe if @project.errors.any? %>   </font>
-	
 	<div class="p">
 	<table style=" color="gray"><tr><td>
 		<%=form.label :Title %>&nbsp;&nbsp;</td><td>
@@ -16,7 +15,6 @@
 	<tr><td>
 
 	</table>
-	
 	<p>	
 		<%= form.submit :Submit %>
 	</p>

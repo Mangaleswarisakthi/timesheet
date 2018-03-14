@@ -1,13 +1,11 @@
 <script>
 
 $(document).ready(function(){
-
   $("#ser").on("keyup", function() {
     var value = $(this).val().toLowerCase();
     $("#sdetail tr").filter(function() {
 	  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 	  });
-	 
   });
   var i=1;
 	$("#total").on("click",function(event){
@@ -25,9 +23,7 @@ $(document).ready(function(){
 		{
 			$("#result").text("Only 8 Hours Work will be Updated").css("color","red");
 		}
-		
 		$.ajax({
-		  
 			type: 'POST',
 			url: "/project/uptasks",
 			data: $("form").serialize(),
@@ -37,7 +33,6 @@ $(document).ready(function(){
 				{
 					 $("#result").text(response.success).css("color","green");
 					$("form")[0].reset();
-				
 				}
 			    if(response.error)
 				{
@@ -46,16 +41,12 @@ $(document).ready(function(){
 				if(response.project)
 				{
 					$("#tab").html(response.project);
-				}
-						
+				}		
 			}
-			
 		});
 		event.preventDefault();	
-	});
-	
+	});	
 });
-
 </script>
 <style> 
 #tab, #flip {
@@ -64,18 +55,13 @@ $(document).ready(function(){
     background-color: #ffb6c1;
     border: solid 1px  #ff0000;
 }
-
 #tab {
-    padding: 50px;
-   
+    padding: 50px; 
 }
 </style>
 <center><font face="ArialT" color="Red" size="4"><b>Time Sheet</b></font>
-
 <hr width="120" color="green" size="4"><br><b>
 <div id="result">
-
-
 </div></b><br><br>
 <%= nested_form_for @project, :url => {:action => "uptasks"}, :validate => true do |f| %>
  &nbsp;&nbsp;&nbsp;<font face="Arial" color="red"><%= "<div>#{@project.errors.full_messages.first}</div>".html_safe if @project.errors.any? %>   </font>
@@ -88,20 +74,14 @@ $(document).ready(function(){
 <table id="tasks"><tr><td><font face='Arial' color='blue' size='3'>ProjectTitle</font></td><td><font face='Arial' color='blue' size='3'>Title</font></td><td><font face='Arial' color='blue' size='3'>Description</font></td><td><font face='Arial' color='blue' size='3'>Duration</font></td></tr>
 <%= f.fields_for :tasks, :wrapper => false do |task| %>
 <tr>	<%= task.hidden_field :taskdate, class: "taskdata" %></tr>
-
 <tr class="fields"><td> 
 <%= task.select :proj_id, options_for_select(Proj.all.map{|c| [c.title, c.id]}, task.object.proj_id), {}, {class: "form-control selectpicker", data: "live-search"} %></td><td>
 		<%= task.text_field :title %></td>
-
 	<td>
 		<%= task.text_field :desc %></td><td>	
 		<%= task.number_field :duration, :class => "sum", step: :any %></td><td><%= task.link_to_remove "Remove" %></td>
-
 </tr>
-
-
 <% end %>
-
 </table><br>
  	<%= f.link_to_add "add", :tasks,  "data-target" => "#tasks"%>	
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

@@ -2,14 +2,7 @@ class ProjectController < ApplicationController
 before_action :authenticate_user!
   def index
 	@project=Proj.new
-	#@project=Proj.order("title").page params[:page]
 	@projects=Proj.order(:title).page(params[:page]).per(5)
- ' if params[:title]
-    @project = Proj.tagged_with(params[:title])
-  else
-    @project = Proj.all
-  end
-  @project = @project.order(created_at: :desc).paginate(page:params[:page], per_page: 3 )'
   end
 def create
 	@project=Proj.new(add_params)
@@ -18,7 +11,6 @@ def create
 	else
 		render :json => {error: @project.errors.full_messages}
 	end
-	
 end
 def edit
  	@project = Proj.find_by_id(params[:id])
@@ -31,23 +23,17 @@ def update
 		flash[:error] = 'Sorry Updation is Failed!'
 	end
 	redirect_to root_path
-	
 end
 def alltask
 	@project=Proj.new
 	@projects=Proj.order(:title).page(params[:page]).per(5)
-	
-
 end
-
 def destroy
 	@project=Proj.find_by(params[:id])
 	flash[:alert] = 'not deleted!'
 	if @project.delete
 		flash[:alert] = 'Deleted'
-		
 	end		
-	
 	@project=Proj.all
 	redirect_to root_path
 end
@@ -58,7 +44,6 @@ end
   def show
 	@project=Proj.find_by(id: params[:id])
   end
-
 def uptasks
 	@projects=Proj.order(:title).page(params[:page]).per(5)
 	@taskdate=params[:obj][:taskdate]
@@ -77,7 +62,7 @@ def uptasks
 	 t=8-Task.where(:taskdate => @taskdate).sum(:duration)	
 	if  sum1 > t || sum1>8 || has_errors==true
 		if sum1>8
-			render :json => {error: "Only 8 Hours will be updated" }
+			render :json => {error: "Only 8 Hours Work will be Updated" }
 		elsif sum1 > t
  			if t > 0
 				render :json => {error: " #{@taskdate} have Your Remaining hours #{t}"}
@@ -90,7 +75,7 @@ def uptasks
 	else	
 		if Task.create(rem)
 			result=render_to_string(:partial => '/project/view', :locals => {:@projects => @projects})
-			render :json => {success: "success", project: result}
+			render :json => {success: "Tasks Successfully Added", project: result}
 		end
 	end
 end
